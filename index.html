@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kinetic Duo · Adaptive Fitness Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#e9eef5;--bg2:#d5dfec;--card:rgba(255,255,255,.75);--solid:#f8fafc;--ink:#1e293b;--mute:#64748b;--line:rgba(100,116,139,.2);--mint:#7ee8a8;--lime:#c6f06a;--cyan:#a5e4f0;--sage:#b8d8c0;--bezel:#0f172a;--blue:#5aa9be;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#1b2434;--bg2:#101722;--card:rgba(51,65,85,.6);--solid:#1e293b;--ink:#e2e8f0;--mute:#94a3b8;--line:rgba(148,163,184,.22);--cyan:#2f6f7e;--sage:#3f6b52}}
+:root[data-theme="dark"]{--bg1:#1b2434;--bg2:#101722;--card:rgba(51,65,85,.6);--solid:#1e293b;--ink:#e2e8f0;--mute:#94a3b8;--line:rgba(148,163,184,.22);--cyan:#2f6f7e;--sage:#3f6b52}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,-apple-system,"SF Pro Display","Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(800px 500px at 10% 0,rgba(165,228,240,.4),transparent 60%),linear-gradient(160deg,var(--bg1),var(--bg2));min-height:100vh;padding:28px 12px;display:flex;flex-direction:column;align-items:center;gap:16px}
+h1{font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--mute);font-weight:600;text-align:center}
+.phone{width:min(100%,380px);height:760px;border-radius:50px;background:var(--bezel);padding:9px;box-shadow:0 40px 60px -28px rgba(30,41,59,.45)}
+.scr{height:100%;border-radius:42px;background:linear-gradient(170deg,var(--solid),var(--bg1));display:flex;flex-direction:column;overflow:hidden;position:relative}
+.view{flex:1;overflow-y:auto;padding:42px 16px 10px;display:flex;flex-direction:column;gap:12px}
+.nav{display:flex;padding:8px 10px 14px;gap:4px;border-top:1px solid var(--line);background:var(--card)}
+.nav button{flex:1;border:0;background:none;font:600 10px Inter,sans-serif;color:var(--mute);padding:6px 0;border-radius:14px;cursor:pointer}
+.nav button.on{background:rgba(126,232,168,.3);color:var(--ink)}
+.nav span{display:block;font-size:17px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.t{font-size:20px;font-weight:700;letter-spacing:-.02em}.h{font-size:15px;font-weight:700}
+.sm{font-size:11px;color:var(--mute);font-weight:500}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:22px;padding:14px}
+.av{width:30px;height:30px;border-radius:50%;border:2px solid var(--solid);display:inline-grid;place-items:center;font-size:11px;font-weight:700;color:#0f172a}
+.av+.av{margin-left:-9px}.a1{background:linear-gradient(135deg,var(--cyan),#7cc4d8)}.a2{background:linear-gradient(135deg,var(--lime),var(--mint))}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.d{border:1px solid var(--line);border-radius:14px;padding:7px 0;text-align:center;font:500 10px Inter,sans-serif;color:var(--mute);background:var(--card)}
+.d b{display:block;font-size:14px;color:var(--ink);margin-top:2px}.d.c{background:var(--cyan);color:var(--ink)}.d.s{background:var(--sage);color:var(--ink)}.d.today{outline:2px solid var(--mint)}
+.tag{display:inline-flex;gap:5px;align-items:center;font-size:10px;font-weight:600;padding:4px 9px;border-radius:99px;background:rgba(126,232,168,.3)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 6px var(--mint);display:inline-block}
+.btn{border:0;border-radius:99px;padding:13px;font:700 14px Inter,sans-serif;color:#0f172a;background:linear-gradient(135deg,var(--lime),var(--mint));width:100%;cursor:pointer;box-shadow:0 10px 20px -10px rgba(126,232,168,.9)}
+.btn.g{background:var(--card);border:1px solid var(--line);color:var(--ink);box-shadow:none}.btn:disabled{opacity:.5}
+.split{display:flex;gap:4px;height:6px;margin-top:10px}.split i{flex:1;border-radius:9px;background:var(--line)}.split i.on{background:var(--mint)}
+.slots{display:flex;gap:6px;margin:10px 0}.slot{flex:1;border-radius:12px;padding:8px;font:500 10px Inter,sans-serif;color:var(--mute);background:var(--solid);border:1px solid var(--line);cursor:pointer;text-align:left}.slot b{display:block;color:var(--ink);font-size:12px}.slot.on{border-color:var(--mint);box-shadow:0 0 0 2px rgba(126,232,168,.4)}
+.chat{display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto;padding:2px}.chat>*{flex:none}.view.coach{overflow:hidden;padding-bottom:12px}.btn.s{padding:9px;font-size:12px}
+.m{max-width:88%;padding:9px 12px;border-radius:16px;font-size:12px;line-height:1.45}.m.u{align-self:flex-end;background:linear-gradient(135deg,var(--lime),var(--mint));color:#0f172a}.m.c{align-self:flex-start;background:var(--card);border:1px solid var(--line)}
+.inp{display:flex;gap:6px}.inp input{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:11px 14px;font:500 12px Inter,sans-serif;outline:0}.inp button{width:42px;border:0;border-radius:50%;background:var(--mint);font-size:16px;cursor:pointer}
+.chips{display:flex;gap:5px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:5px 10px;font:600 10px Inter,sans-serif;cursor:pointer}.chip.on{background:var(--mint);border-color:var(--mint);color:#0f172a}
+.ex{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px dashed var(--line)}.ex.x{color:var(--mute);text-decoration:line-through}.ex span:last-child{color:var(--mute)}
+.dial{position:relative;margin:0 auto;width:226px;height:226px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--solid),var(--bg2));box-shadow:inset 0 2px 6px rgba(255,255,255,.5),0 18px 30px -14px rgba(30,41,59,.4)}
+.dial svg{width:100%;height:100%}.mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}.mid b{font-size:38px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.mid span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.pills{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:6px}.pl{border-radius:16px;padding:8px;background:var(--card);border:1px solid var(--line);font-size:9px;color:var(--mute)}.pl b{display:block;font-size:13px;color:var(--ink);margin-top:2px}
+.badges{display:flex;gap:6px}.bd{flex:1;font-size:10px;font-weight:600;padding:7px 8px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.tog{width:40px;height:23px;border-radius:99px;background:var(--line);position:relative;border:0;cursor:pointer}.tog.on{background:var(--mint)}.tog:after{content:"";position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:#fff;transition:.2s}.tog.on:after{left:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.eq{border-radius:18px;padding:10px;background:var(--card);border:1px solid var(--line);text-align:center;font:600 11px Inter,sans-serif;color:var(--ink);cursor:pointer}.eq.on{border-color:var(--mint);box-shadow:0 0 0 2px rgba(126,232,168,.4)}.eq div{font-size:22px}.eq em{display:block;font-style:normal;font-weight:500;color:var(--mute);font-size:9px}
+.hm{display:grid;grid-template-columns:repeat(14,1fr);grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:3px}.hm i{aspect-ratio:1;border-radius:4px;background:var(--line)}.hm .l1{background:#cdf5dc}.hm .l2{background:var(--mint)}.hm .r{background:var(--cyan)}.hm .now{outline:2px solid var(--ink)}
+.d{cursor:pointer}.d.sel{box-shadow:0 0 0 2px var(--mint)}.ev{display:grid;grid-template-columns:60px 1fr auto;gap:8px;padding:8px 0;border-bottom:1px dashed var(--line)}.ev:last-child{border:0}.ev b{font-size:11px}.ev.move b{color:var(--blue)}.ev.rest b{color:var(--mute)}.inp button.rec{background:#fca5a5;animation:pl 1s infinite}@keyframes pl{50%{opacity:.5}}
+.toast{position:absolute;left:50%;top:44px;transform:translateX(-50%);background:var(--bezel);color:#fff;font:600 11px Inter,sans-serif;padding:8px 14px;border-radius:99px;z-index:5;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}.toast.show{opacity:1}
+.scr:before{content:"";position:absolute;top:9px;left:50%;width:88px;height:23px;border-radius:12px;background:var(--bezel);transform:translateX(-50%);z-index:6}
+</style>
+</head>
+<body>
+<h1>Kinetic Duo · Adaptive Fitness Prototype</h1>
+<div class="phone"><div class="scr"><div class="toast" id="toast"></div><div class="view" id="view"></div>
+<div class="nav" id="nav"></div></div></div>
+<p class="sm" style="text-align:center;max-width:380px">Try the Coach tab: “Stuck at work till 9pm, exhausted” · “I only have 25 min” · “Getting home at 1:30 AM” · “I want to rest today” · “40 min workout, solo” · Tap 🎙️ in the chat box and speak: “home at 9pm, tired”, or say “start workout”, “pause”</p>
+
+<script>
+const $=id=>document.getElementById(id),esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const EX=[{n:'Back Squat',m:15,c:1,p:9},{n:'Romanian Deadlift',m:12,c:1,p:9},{n:'Reformer Lunges',m:10,c:0,p:3},{n:'Core Circuit',m:8,c:0,p:2},{n:'Band Hip Thrust',m:8,c:0,p:1},{n:'Kettlebell Swings',m:7,c:0,p:0}];
+const mk=(lbl,type,kept,pruned,slot,msg)=>({lbl,type,kept,pruned,slot,msg,dur:kept.reduce((a,e)=>a+e.m,0),name:type=='rest'?'Intentional Rest Day':type=='shift'?'Lower Body · moved':'Lower Body Reformer & Core'});
+const S={tab:'coach',vers:[mk('v0','full',EX,[],null,'')],act:0,commit:0,turns:0,today:'plan',onb:0,profile:{},msgs:[{r:'c',t:"Hi, I'm Kinetic. Before we plan anything, two quick questions so I can tailor everything to you.",ob:1},{r:'c',t:"How would you describe your gym experience?",ob:1}],
+ slot:1,rsvpMe:0,rsvpAlex:0,live:1,eq:[1,0,1,1],left:3600,run:0,kcal:[280,260],solo:0,hold:0,esc:0,done:0,voice:0,spoken:1,mic:0,micErr:'',viaVoice:0,cday:2,escCat:'',planOpen:0};
+const SLOTS=[['Tue','7:00 AM'],['Thu','6:30 PM'],['Sat','9:00 AM']];
+
+const NUM={zero:0,one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,thirty:30,forty:40,fifty:50,sixty:60};
+function norm(t){let s=t.toLowerCase().replace(/\b([ap])\.\s?m\.?/g,'$1m').replace(/o'clock/g,'').replace(/\bhalf an hour\b/g,'30 minutes').replace(/\ban hour\b/g,'60 minutes');
+ s=s.replace(/\b(twenty|thirty|forty|fifty|sixty)[\s-](one|two|three|four|five|six|seven|eight|nine)\b/g,(m,a,b)=>NUM[a]+NUM[b]);
+ s=s.replace(/\b(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty)\b/g,m=>NUM[m]);
+ return s.replace(/\b(\d{1,2})\s(\d{2})\s*(am|pm)\b/g,'$1:$2 $3')}
+const fmt=h=>{const x=Math.floor(h),m=Math.round((h-x)*60);return((x%12)||12)+(m?':'+String(m).padStart(2,'0'):'')+(x<12?' AM':' PM')};
+function analyze(t){const s=norm(t);let h=null;for(const t of s.matchAll(/\b(\d{1,2})(?::([0-5]\d))?\s*(am|pm)?\b/g)){if(!t[2]&&!t[3])continue;const x=+t[1],f=(+t[2]||0)/60;if(t[3]){if(x>=1&&x<=12)h=x%12+(t[3]=='pm'?12:0)+f}else if(x<=23)h=(x>=1&&x<=11?x+12:x)+f}
+ let mins=null;const mn=s.match(/\b(\d{1,3})\s*(?:min|mins|minutes)\b/),hr=s.match(/\b(\d(?:\.\d)?)\s*(?:hours?|hrs?)\b/);
+ if(mn)mins=+mn[1];else if(hr)mins=Math.round(+hr[1]*60);else if(/\bhalf an hour\b/.test(s))mins=30;
+ const rest=/\b(rest|skip|day off|no workout)\b/.test(s),stress=/\b(stress\w*|deadlines?|overwhelm\w*|swamped|slammed|meetings?|overrun|busy|work(?!\s*out)|working(?!\s*out)|late)\b/.test(s),tired=/\b(tired|exhausted|sore|drained|wiped|fatigue\w*|sleepy)\b/.test(s),solo=/\b(solo|alone|by myself|on my own|individual(ly)?)\b/.test(s),usual=/\b(like usual|as usual|as planned|as scheduled|same as (always|usual)|full (workout|session|plan)|regular (workout|session|plan)|normal (workout|session|plan))\b/.test(s);
+ return{h,mins,rest,stress,tired,solo,usual,signal:h!=null||mins!=null||rest||stress||tired||solo||usual}}
+function propose(a){const n=S.vers.length,L='v'+n;
+ if(a.rest)return mk(L,'rest',[],EX,{d:'Tomorrow',t:'7:00 AM'},"Totally fine, rest is part of the plan. Today is logged as an Intentional Rest Day, so your streak stays safe. The full session moves to tomorrow 7:00 AM.");
+ if(a.h!=null&&(a.h>=23||a.h<5))return mk(L,'shift',EX,[],{d:'Tomorrow',t:'6:30 PM'},"Training at "+fmt(a.h)+" would cut into your sleep, so I've moved the full 60-min session to tomorrow 6:30 PM. Nothing is lost.");
+ let b=a.mins??(a.h!=null?(a.h<=19?60:a.h<=20?45:a.h<=21?30:20):60);const why=[];
+ if(a.mins!=null)why.push('the '+a.mins+' min you have');else if(a.h!=null&&b<60)why.push('a ~'+fmt(a.h)+' start');
+ if(a.stress){b-=10;why.push('work stress')}if(a.tired){b-=10;why.push('low energy')}
+ const raw=b;b=Math.max(15,Math.min(60,b));
+ const kept=[],pr=[];let used=0;[...EX].sort((x,y)=>y.p-x.p).forEach(e=>{if(used+e.m<=b){kept.push(e);used+=e.m}else pr.push(e)});
+ kept.sort((x,y)=>EX.indexOf(x)-EX.indexOf(y));const big=kept.filter(e=>e.c).map(e=>e.n);
+ const msg=pr.length?`Adapted to ${used} min${why.length?' for '+why.join(' + '):''}. Keeping ${kept.map(e=>e.n).join(', ')}.${big.length?` ${big.join(' and ')} ${big.length>1?'stay as priority lifts':'stays as your priority lift'}.`:''} ${pr.map(e=>e.n).join(', ')} move${pr.length==1?'s':''} to tomorrow 7:00 AM.${raw<15?' 15 min is the shortest useful session I build.':''}`:"You have room for the full 60 min, so the plan stays as is.";
+ const pp=mk(L,pr.length?'compressed':'full',kept,pr,pr.length?{d:'Tomorrow',t:'7:00 AM'}:null,msg);pp.at=a.h!=null?fmt(a.h):null;return pp}
+const MED=/\b(pain|pains|painful|hurt|hurts|hurting|ach(e|es|ing)|backache|headaches?|injur\w+|sprain\w*|strain(ed)?|joints?|knees?|sciatica|tendon\w*|fractur\w+|swollen|swelling|numb|numbness|dizz\w+|faint(ing)?|chest tightness|palpitations?|breathless|short of breath|nause\w+|vomit\w*|fever\w*|sick|ill|unwell|flu|cough\w*|infection|bleeding|rash|migraines?|anxiety|anxious|panic\w*|depress\w+|mental health|therapy|suicid\w+|self[- ]harm|hopeless|medications?|medicines?(?! ball)|pills?|dosage|prescriptions?|painkillers?|steroids?|antibiotics?|supplements?|pregnan\w+|diagnos\w+|doctor|asthma|diabetes|blood pressure)\b/i;
+const THIRD=/\b(friends?|colleagues?|co-?workers?|boss|manager|wife|husband|mom|dad|mother|father|brother|sister|kids?|son|daughter|partner|neighbou?rs?|roommate|he|she|they|him|her|someone|somebody|people|everyone|alex|teammates?|classmates?|cousin|uncle|aunt|grand\w+)\b/i,SELF=/\b(i|i'm|im|i've|ive|me|myself)\b/i,NEG=/\b(?:no|not|without|never|isn'?t|aren'?t|don'?t have|\w+n't)\b(?:\W+\w+){0,1}\W*$/i;
+function selfMed(t){return t.split(/[,;.!?]|\b(?:but|and|so|although|while)\b/i).some(c=>{const m=MED.exec(c);if(!m)return 0;if(THIRD.test(c)&&!SELF.test(c))return 0;return!NEG.test(c.slice(0,m.index))})}
+const CRISIS=/\b(suicid\w+|self[- ]harm|hopeless|kill myself|want to die|end it all)\b/i;
+const PII=[/[^\s@]+@[^\s@]+\.[a-z]{2,}/i,/\d(?:[ -]?\d){9,}/,/\b[A-Z]{5}\d{4}[A-Z]\b/,/\b(cvv|cvc|card number|credit card|debit card|upi|otp|password|passcode|aadhaar|aadhar|passport|ssn|social security|bank account|ifsc|iban|date of birth|dob|my address|home address|phone number|my email|pan card|my name is)\b/i];
+const MATH=/\b(solve|calculate|compute|derivative|integral|equation|algebra|trigonometry|square root|logarithm)\b|\b(?:integrate|differentiate|simplify)\s+(?:the\s+)?(?:function|expression|fraction|\d|x\b)|\d\s*[+*/÷×^]\s*\d|what(?:'s| is)\s+\d+\s*[-x]\s*\d+|\d+\s*(plus|minus|times|divided by|multiplied by)\s*\d+/i;
+const TRAVEL=/\b(book(ing)?|reserve|purchase|buy)\b[^.]*\b(flights?|tickets?|hotels?|cab|taxi|bus|trip|airline|visa)\b|\b(flights? (ticket|booking)s?|airlines?|boarding pass)\b/i;
+const reply=t=>S.msgs.push({r:'c',t});
+function escalate(t){const cr=CRISIS.test(t),mh=/\b(anxi\w+|depress\w+|panic\w*|mental health|therapy|hopeless)\b/i.test(t),md=/\b(medications?|medicines?|pills?|dosage|prescriptions?|painkillers?|steroids?|antibiotics?|supplements?)\b/i.test(t);
+ S.run=0;S.hold=1;S.esc=1;S.escCat=cr?'crisis':mh?'mental':md?'med':'body';S.tab='coach';
+ reply({crisis:"I'm really sorry you're going through this. You deserve support from a real person, and I'm not the right help for this. If you might be in danger, please contact your local emergency number now or reach out to someone you trust. I've paused training and flagged this for a human.",mental:"Thank you for telling me. What you're feeling matters, and I'm not the right support for it. I've paused training and flagged this for a human who can help.",med:"I can't advise on medication or supplements. A doctor or pharmacist is the right person for that. I've paused training and flagged this for a human.",body:"I'm sorry you're not feeling well. I can't give health advice, so I've paused training and flagged this for a human to follow up. Your plan is on hold, not lost."}[S.escCat]);render()}
+function startSolo(){if(S.hold)return toast('Paused until a human has followed up');const p=S.vers[S.commit];if(!p.dur||p.type=='rest'||p.type=='shift')return toast('No workout to start today');S.solo=1;S.left=p.dur*60;S.run=1;S.tab='sync';toast('Solo session started · '+p.dur+' min');speak('Starting your '+p.dur+' minute solo session.');render()}
+function endSolo(){S.solo=0;S.run=0;S.left=S.vers[S.commit].dur*60;toast('Session ended');render()}
+function commitRoutine(){if(S.rsvpMe)return;S.rsvpMe=1;render();setTimeout(()=>{S.rsvpAlex=1;toast('Alex confirmed '+SLOTS[S.slot][0]+' '+SLOTS[S.slot][1]);if(S.tab=='sync')render()},1600)}
+function send(txt){txt=txt.trim();if(!txt)return;
+ if(PII.some(r=>r.test(txt)||r.test(norm(txt)))){S.msgs.push({r:'u',t:'🔒 Message withheld (personal info)'});reply("I don't access, collect or store personal or payment information such as card numbers, ID numbers, phone, email, addresses or passwords, so please don't share them here. I've kept that message out of the chat. I can still adapt your workout: tell me your time and energy.");return render()}
+ S.msgs.push({r:'u',t:(S.viaVoice?'🎙️ ':'')+txt});
+ if(S.onb<2)return onbTyped(txt);
+ if(!S.hold&&!S.offline)return askClaude(txt);
+ localRoute(txt)}
+// Built-in rules engine: used only when Claude (the server) is unavailable or coaching is on hold.
+function localRoute(txt){
+ if(CRISIS.test(txt)||selfMed(txt))return escalate(txt);
+ if(TRAVEL.test(txt)){reply("I can't book travel or tickets. I only help with your training schedule.");return render()}
+ if([txt,norm(txt)].some(x=>MATH.test(x))){reply("I don't solve math problems. I'm here to adapt your workouts around your day.");return render()}
+ if(S.hold){reply("Coaching is on hold while a human follows up. You can log today as a rest day, or resume once you've been cleared.");return render()}
+ const a=analyze(txt);
+ if(!a.signal){reply(/^(hi|hello|hey|yo|good (morning|afternoon|evening))\b/i.test(txt)?"Hi! Tell me what your day looks like and I'll adapt your workout.":"I didn't catch a schedule or energy detail, so I haven't changed your plan. Tell me when you'll be free, how many minutes you have, or how you feel, e.g. “home at 9pm, tired” or “I only have 25 min”.");return render()}
+ if(S.turns>=3){reply("You've used your 3 free turns. Pick a version above to continue.");return render()}
+ const p=propose(a);S.vers.push(p);S.act=S.vers.length-1;S.turns++;reply(p.msg);
+ if(S.turns==3)reply("That's your 3 free turns. Compare v0–v3 above and commit the one that fits.");
+ if(a.solo&&p.type!='rest'&&p.type!='shift'){commit(S.act);reply('Starting your solo session now: '+p.dur+'-min timer, opening Sync.');return startSolo()}
+ render()}
+// Onboarding: two questions at the start of the chat. Answers are sent to Claude with every message.
+const OB=[{key:'level',q:"How would you describe your gym experience?",opts:[['beginner','Beginner',"I'm new to the gym or have less than 6 months of experience."],['intermediate','Intermediate',"I've been training consistently for 6 months to 2 years."],['advanced','Advanced',"I've been training for over 2 years and follow structured workout plans."]]},
+{key:'goal',q:"What's your primary fitness goal?",opts:[['muscle','Muscle Gain','Build muscle mass and strength.'],['cardio','Improve Cardio','Increase endurance and cardiovascular fitness.'],['overall','Overall Fitness','Stay active, improve health, and build general fitness.']]}];
+function parseOb(step,t){const s=norm(t);
+ if(step==0){if(/\b(advanced|over 2|more than 2|structured|expert)\b/.test(s)||/^3\b/.test(s))return'advanced';if(/\b(intermediate|consistent\w*|6 months|1 year|2 years|medium)\b/.test(s)||/^2\b/.test(s))return'intermediate';if(/\b(beginner|new|less than|just start\w*|first time|novice)\b/.test(s)||/^1\b/.test(s))return'beginner'}
+ else{if(/\b(muscle|strength|bulk\w*|hypertrophy|gain)\b/.test(s)||/^1\b/.test(s))return'muscle';if(/\b(cardio|endurance|stamina|running|run)\b/.test(s)||/^2\b/.test(s))return'cardio';if(/\b(overall|general|health\w*|active|fit\w*|everything)\b/.test(s)||/^3\b/.test(s))return'overall'}
+ return null}
+function onbAnswer(val,label,pushUser){const step=S.onb;S.profile[OB[step].key]=val;S.onb++;
+ if(pushUser)S.msgs.push({r:'u',t:label,ob:1});
+ if(S.onb<2)S.msgs.push({r:'c',t:OB[S.onb].q,ob:1});
+ else{const L={beginner:'a beginner',intermediate:'an intermediate lifter',advanced:'an advanced lifter'}[S.profile.level],G={muscle:'building muscle and strength',cardio:'improving your cardio',overall:'overall fitness'}[S.profile.goal];
+  S.msgs.push({r:'c',t:"Perfect, you're "+L+" focused on "+G+". I'll shape every session around that. Now tell me what's happening today (work running late, tired, short on time) and I'll rebuild your session without losing progress.",ob:1})}
+ render()}
+function onbTyped(txt){S.msgs[S.msgs.length-1].ob=1;const v=parseOb(S.onb,txt);
+ if(!v){S.msgs.push({r:'c',t:"I didn't catch that. Tap one of the options below, or type it, e.g. \u201c"+OB[S.onb].opts[0][1]+"\u201d.",ob:1});return render()}
+ onbAnswer(v,txt,false)}
+// Claude coach: the server sends the chat to the Claude API, Claude thinks it through, and returns the plan + reply.
+function dropPending(){S.msgs=S.msgs.filter(m=>!m.pending);S.spoken=Math.min(S.spoken,S.msgs.length)}
+async function askClaude(txt){
+ if(S.busy)return;S.busy=1;S.msgs.push({r:'c',t:'Thinking it through…',pending:1});render();
+ try{
+  const v=S.vers[S.act],history=S.msgs.filter(m=>!m.pending&&!m.ob&&!m.t.startsWith('🔒'));
+  const res=await fetch('/api/coach',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({history,profile:S.profile,turnsUsed:S.turns,hold:S.hold,activePlan:S.act?v.lbl+': '+v.dur+' min, '+v.kept.map(e=>e.n).join(', '):'original full session'})});
+  if(!res.ok){const e=new Error('coach '+res.status);e.status=res.status;throw e}
+  const r=await res.json();dropPending();S.busy=0;applyClaude(r)
+ }catch(e){
+  dropPending();S.busy=0;
+  if(e.status==503||e instanceof TypeError){S.offline=1;toast('Claude is offline. Using built-in rules.')}else toast('Claude hiccup. Using built-in rules for this one.');
+  localRoute(txt)}}
+function applyClaude(r){
+ if(r.intent=='escalate'){S.run=0;S.hold=1;S.esc=1;S.escCat=r.category;S.tab='coach';reply(r.reply);return render()}
+ if(!['adapt','keep_plan','rest','shift'].includes(r.intent)){reply(r.reply);return render()}
+ if(S.turns>=3){reply("You've used your 3 free turns. Pick a version above to continue.");return render()}
+ const get=n=>EX.find(e=>e.n==n),type={adapt:'compressed',keep_plan:'full',rest:'rest',shift:'shift'}[r.intent];
+ const pp=mk('v'+S.vers.length,type,r.kept.map(get),r.pruned.map(get),r.slot,r.reply);pp.at=r.startAt;pp.rx=Object.fromEntries((r.prescriptions||[]).map(p=>[p.exercise,p.sets+' × '+p.reps+' · '+p.load]));
+ S.vers.push(pp);S.act=S.vers.length-1;S.turns++;reply(r.reply);
+ if(S.turns==3)reply("That's your 3 free turns. Compare v0–v3 above and commit the one that fits.");
+ if(r.solo){commit(S.act);reply('Starting your solo session now: '+pp.dur+'-min timer, opening Sync.');return startSolo()}
+ render()}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,micWanted=0,recId=0;
+function killMic(){recId++;micWanted=0;if(rec){try{rec.abort()}catch(e){}}S.mic=0;const b=$('mic');if(b)b.classList.remove('rec')}
+function speak(t,f,n){n=n||0;if(!(S.voice||f)||!('speechSynthesis' in window))return;if(S.mic&&n<8)return setTimeout(()=>speak(t,f,n+1),250);
+ try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/[^\x20-\x7E]/g,' '));u.lang='en-US';const vo=speechSynthesis.getVoices().find(x=>/^en/i.test(x.lang));if(vo)u.voice=vo;setTimeout(()=>speechSynthesis.speak(u),80)}catch(e){}}
+function listen(){const pp=document.permissionsPolicy||document.featurePolicy;if(pp&&pp.allowsFeature&&!pp.allowsFeature('microphone')){S.micErr=EMB;return render()}
+ if(!SR){S.micErr="Voice input isn't supported in this browser. Please type instead.";return render()}
+ if(S.mic&&rec){micWanted=0;rec.stop();return}
+ try{if(window.speechSynthesis)speechSynthesis.cancel();killMic();const my=recId;rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=true;S.micErr='';micWanted=1;let fin='';const i0=$('in'),base=i0&&i0.value?i0.value.trim()+' ':'';
+ rec.onstart=()=>{if(my!=recId)return;S.mic=1;const b=$('mic'),i=$('in');if(b)b.classList.add('rec');if(i)i.placeholder='Listening… tap ➤ to send'};
+ rec.onend=()=>{if(my!=recId)return;if(micWanted){try{rec.start();return}catch(e){}}S.mic=0;micWanted=0;const b=$('mic'),i=$('in');if(b)b.classList.remove('rec');if(i&&!i.value)i.placeholder='Type or tap 🎙️ to speak'};
+ rec.onerror=e=>{if(my!=recId)return;if(e.error=='no-speech'||e.error=='aborted')return;micWanted=0;S.mic=0;S.micErr=/not-allowed|service/.test(e.error)?(inFrame()?EMB:'Microphone access was denied. Click the lock icon in the address bar and allow it, then try again.'):e.error=='audio-capture'?'No microphone was found on this device.':e.error=='network'?"The speech service couldn't be reached. Check your connection and try again.":'Voice input had a problem. Please type instead.';render()};
+ rec.onresult=e=>{if(my!=recId)return;let interim='';for(let k=e.resultIndex;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)fin+=r[0].transcript+' ';else interim+=r[0].transcript}S.viaVoice=1;const i=$('in');if(i)i.value=(base+fin+interim).trim()};
+ rec.start()}catch(e){S.micErr='Voice input is unavailable here. Please type instead.';render()}}
+function cmd(t){const s=t.toLowerCase().replace(/[.!?,]/g,'').trim().replace(/^(please|ok|okay|hey kinetic|kinetic)\s+/,'').replace(/\s+please$/,'');let m;
+ if(m=s.match(/^(?:go to|open|show|switch to|take me to)(?: the)? (sync|coach|session|room|calendar|rewards?)(?: tab)?$/)){S.tab={calendar:'sync',reward:'room',rewards:'room'}[m[1]]||m[1];render();return 1}
+ if(/^start (?:my |the |a )?(?:solo )?(?:workout|timer|session)$/.test(s)){startSolo();return 1}
+ if(/^start (?:the )?duo (?:set|workout|session)$/.test(s)){if(S.hold)toast('Paused until a human has followed up');else if(S.left){S.solo=0;S.run=1;S.tab='session';render()}return 1}
+ if(/^(?:pause|stop)(?: the)?(?: timer| workout| session)?$/.test(s)){S.run=0;render();return 1}
+ if(/^(?:resume|continue)(?: the)?(?: timer| workout| session)?$/.test(s)){if(S.hold)toast('Paused until a human has followed up');else if(S.left){S.run=1;render()}return 1}
+ if(/^end (?:the )?(?:workout|session|timer)$/.test(s)){endSolo();return 1}
+ if(/^commit(?: my)?(?: routine)?$/.test(s)){commitRoutine();return 1}
+ if(/^(?:what is my plan|whats my plan|read (?:my |the )?plan)$/.test(s)){const p=S.vers[S.commit];S.tab='coach';reply(p.dur?p.name+': '+p.dur+' min. '+p.kept.map(e=>e.n).join(', ')+'.':p.name+'.');render();return 1}
+ if(/^voice (?:replies )?(on|off)$/.test(s)){S.voice=/on$/.test(s)?1:0;render();return 1}
+ return 0}
+function handle(t){if(S.mic||micWanted)killMic();t=t.trim();if(S.viaVoice)toast('Heard: “'+t.slice(0,40)+'”');if(!cmd(t)){S.tab='coach';send(t)}}
+function commit(i){S.commit=i;S.solo=0;S.done=0;S.cday=TODAY;const p=S.vers[i];S.today=p.type=='rest'?'rest':p.type=='shift'?'shift':'train';S.left=p.dur*60;S.run=0;toast(p.type=='rest'?'Rest day logged · streak protected':'Plan '+p.lbl+' committed');render()}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+
+const ring=(r,p,c)=>{const L=2*Math.PI*r;return`<circle cx="100" cy="100" r="${r}" fill="none" stroke="var(--line)" stroke-width="9"/><circle id="rg${r}" cx="100" cy="100" r="${r}" fill="none" stroke="${c}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(L*p).toFixed(1)} ${L.toFixed(1)}" transform="rotate(-90 100 100)"/>`};
+const kc=()=>Math.round(S.solo?S.kcal[0]:S.kcal[0]+S.kcal[1]);const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const pct=()=>{const T=S.vers[S.commit].dur*60;return T?1-S.left/T:0};
+
+const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],TODAY=2;
+const tmin=t=>{const m=t.match(/(\d+)(?::(\d+))?\s*(AM|PM)/);return m?((+m[1]%12)+(m[3]=='PM'?12:0))*60+(+m[2]||0):600};
+function calEvents(){const commit=S.today!='plan',v=commit?S.vers[S.commit]:S.vers[S.act],ev=[],tag=commit?'Confirmed':S.act?'Preview':'Planned';
+ SLOTS.forEach((x,i)=>ev.push({d:[1,3,5][i],t:x[1],ttl:'Duo Sync · Lower Body & Core',m:'With Alex',k:'duo',tag:i==S.slot&&S.rsvpMe?(S.rsvpAlex?'Confirmed':'Waiting for Alex'):'Shared slot'}));
+ if(v.type=='rest'){ev.push({d:TODAY,t:'All day',ttl:'Intentional Rest Day',m:'Streak protected',k:'rest',tag,sh:'Rest day'},{d:TODAY+1,t:v.slot.t,ttl:'Full session (from rest day)',m:'60 min · '+EX.length+' exercises',k:'move',tag,sh:'Session 60m'})}
+ else if(v.type=='shift'){ev.push({d:TODAY,t:'All day',ttl:'Session moved to tomorrow',m:'Too late to train. Sleep first.',k:'rest',tag,sh:'Moved'},{d:TODAY+1,t:v.slot.t,ttl:v.name,m:'60 min'+(v.slot.t==SLOTS[1][1]?' · same time as your shared slot, Alex can join':''),k:'move',tag,sh:'Session 60m'})}
+ else{ev.push({d:TODAY,t:v.at||'Today',ttl:v.name,m:v.dur+' min · '+v.kept.map(e=>e.n).join(', '),k:'train',tag,sh:'Session '+v.dur+'m'});
+  if(v.pruned.length){const pm=v.pruned.reduce((a,e)=>a+e.m,0);ev.push({d:TODAY+1,t:v.slot.t,ttl:'Top-up: '+v.pruned.map(e=>e.n).join(', '),m:pm+' min',k:'move',tag,sh:'Top-up '+pm+'m'})}}
+ return ev}
+function sync(){const p=S.vers[S.commit],ev=calEvents(),commit=S.today!='plan',sel=ev.filter(e=>e.d==S.cday).sort((a,b)=>tmin(a.t)-tmin(b.t)),ad=ev.filter(e=>e.k!='duo');
+ const solo=S.solo?`<div class="card"><div class="row"><span class="tag"><i class="dot"></i>Solo session</span><span class="sm">${p.dur} min · ${p.kept.length} exercises</span></div><div class="row" style="margin:10px 0 8px"><b id="tm2" style="font-size:40px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums">${mmss(S.left)}</b><div class="sm" style="text-align:right">🔥 <span id="kc2">${Math.round(S.kcal[0])}</span> kcal</div></div><div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:10px"><div id="pb" style="height:100%;width:${(pct()*100).toFixed(1)}%;background:var(--mint)"></div></div><div class="row"><button class="btn" id="go">${S.run?'Pause':S.left?'Resume':'Complete ✓'}</button><button class="btn g" id="end">End</button></div></div>`:'';
+ return`<div class="row"><div class="t">Sync Calendar</div><div><span class="av a1">Y</span><span class="av a2">A</span></div></div>${solo}
+<div class="week">${DAYS.map((d,i)=>{const n=ev.filter(e=>e.d==i&&e.k!='duo').length;return`<button class="d ${i==1||i==5?'c':i==3?'s':''} ${i==TODAY?'today':''} ${i==S.cday?'sel':''}" data-day="${i}">${d}<b>${12+i}</b><span style="display:block;height:7px;font-size:7px;line-height:7px;color:var(--blue)">${'●'.repeat(Math.min(3,n))}</span></button>`}).join('')}</div>
+${ad.length&&(S.act>0||commit)?`<div class="card" style="padding:10px"><div class="sm" style="margin-bottom:6px">${commit?'✅ Coach plan is on your calendar':'👀 Previewing '+S.vers[S.act].lbl+'. Commit it in Coach to confirm.'}</div><div class="chips">${ad.map(e=>`<button class="chip" data-day="${e.d}">${DAYS[e.d]} · ${e.sh}</button>`).join('')}</div></div>`:''}
+<div class="card"><div class="row"><div class="h">${DAYS[S.cday]} ${12+S.cday}${S.cday==TODAY?' · Today':''}</div><span class="tag"><i class="dot"></i>Google Calendar synced</span></div>
+${sel.length?sel.map(e=>`<div class="ev ${e.k}"><b>${e.t}</b><div><div style="font-size:12px;font-weight:600">${e.ttl}</div><div class="sm">${e.m}</div></div><span class="sm">${e.tag}</span></div>`).join(''):'<div class="sm" style="padding:10px 0">Nothing scheduled.</div>'}</div>
+<div class="card" style="margin-top:auto"><div class="h">Duo routine with Alex</div><div class="slots">${SLOTS.map((x,i)=>`<button class="slot ${S.slot==i?'on':''}" data-slot="${i}">${x[0]}<b>${x[1]}</b></button>`).join('')}</div>
+<div class="row sm" style="margin-bottom:10px"><span>You · <b style="color:var(--ink)">${S.rsvpMe?'Confirmed':'Not yet'}</b></span><span>Alex · <b style="color:var(--ink)">${S.rsvpAlex?'Confirmed':S.rsvpMe?'Reviewing…':'Pending'}</b></span></div>
+<button class="btn" id="cr" ${S.rsvpMe?'disabled':''}>${S.rsvpMe?'Routine Committed':'Commit Routine'}</button><div class="split"><i class="${S.rsvpMe?'on':''}"></i><i class="${S.rsvpAlex?'on':''}"></i></div><button class="btn g" data-solo="${S.commit}" style="margin-top:10px" ${!p.dur||p.type=='rest'||p.type=='shift'?'disabled':''}>Train solo instead</button></div>`}
+function coach(){const v=S.vers[S.act],done=S.commit==S.act&&S.today!='plan',noGo=v.type=='rest'||v.type=='shift';
+ const escCard=S.esc?`<div class="card" style="border-color:${S.escCat=='crisis'?'#ef4444':'#f59e0b'}"><div class="h">💛 Let's get you to a person</div>
+ ${S.escCat=='crisis'?'<div class="sm" style="margin:6px 0"><b style="color:var(--ink)">If you are in immediate danger, call your local emergency number now.</b></div>':''}
+ ${S.esc==2?'<div style="font-size:12px;line-height:1.9;margin:6px 0">✅ Request sent<br>⏳ A human will follow up here in the app<br>⏸ Training stays on hold until you resume</div>':'<div class="sm" style="margin:6px 0 8px">A real person can help with this. You choose what happens next.</div>'}
+ ${S.esc==1?'<button class="btn s" data-esc="req">Connect me with a human</button>':''}
+ ${S.today!='rest'?'<button class="btn s g" data-esc="rest" style="margin-top:6px">🌙 Log today as a rest day</button>':''}
+ <button class="btn s g" data-esc="resume" style="margin-top:6px">I\'ve been cleared, resume coaching</button>
+ <div class="sm" style="margin-top:6px">Urgent? Contact your local emergency services.</div></div>`:'';
+ const obCard=S.onb<2?`<div class="card" style="padding:10px">${OB[S.onb].opts.map(o=>`<button class="btn s g" data-ob="${o[0]}" style="display:block;width:100%;text-align:left;margin-bottom:6px"><b>${o[1]}</b><br><span class="sm">${o[2]}</span></button>`).join('')}</div>`:'';
+ const plan=S.hold?'':`<div class="card" style="padding:10px"><div class="row"><div class="h" style="font-size:13px">${v.name}</div><span class="sm">${v.dur} min · ${v.kept.length} exercises</span></div>
+ ${S.planOpen?`<div style="max-height:110px;overflow-y:auto;margin-top:6px">${v.kept.map(e=>`<div class="ex"><span>${e.c?'● ':''}${e.n}</span><span>${e.m}m</span></div>${v.rx&&v.rx[e.n]?`<div class="sm" style="margin:-2px 0 6px 12px">${esc(v.rx[e.n])}</div>`:''}`).join('')}${v.pruned.map(e=>`<div class="ex x"><span>${e.n}</span><span>${e.m}m</span></div>`).join('')}${v.slot?`<div class="sm" style="margin-top:6px">↪ ${v.slot.d} @ ${v.slot.t}</div>`:''}</div>`:''}
+ <div class="row" style="margin-top:8px"><button class="btn s" data-c="${S.act}" ${done?'disabled':''}>${done?'Committed':'Use '+(S.act?v.lbl:'original')}</button><button class="btn s g" data-solo="${S.act}" ${noGo?'disabled':''}>▶ Solo</button><button class="btn s g" data-det="1">${S.planOpen?'Hide':'Details'}</button></div></div>`;
+ return`<div class="row"><div class="t">Coach</div><div class="row" style="gap:5px"><button class="chip ${S.voice?'on':''}" data-voice="1">🔊 ${S.voice?'On':'Off'}</button><span class="tag">${3-S.turns} left</span></div></div>
+<div class="chips">${S.vers.map((x,i)=>`<button class="chip ${i==S.act?'on':''}" data-v="${i}">${i?x.lbl:'v0 Original'}</button>`).join('')}<button class="chip" data-t="sync">📅 Calendar</button></div>
+<div class="chat">${S.msgs.map(m=>`<div class="m ${m.r}">${esc(m.t)}</div>`).join('')}${obCard}${escCard}</div>${S.onb<2?'':plan}
+<div class="inp"><input id="in" placeholder="${S.mic?'Listening… speak now':'Type or tap 🎙️ to speak'}"><button id="mic" class="${S.mic?'rec':''}" aria-label="Speak">🎙️</button><button id="sd" aria-label="Send">➤</button></div>${S.micErr?`<div class="sm">${S.micErr}</div>${inFrame()?'<button class="chip" id="newtab" style="align-self:flex-start">↗ Open in its own tab</button>':''}`:''}`}
+
+function session(){const p=S.vers[S.commit],T=p.dur*60;
+ if(!T)return`<div class="t">Session</div><div class="card" style="text-align:center;padding:40px 20px"><div style="font-size:40px">🌙</div><div class="h" style="margin:8px 0">${S.today=='rest'?'Intentional rest day':'Nothing to train today'}</div><div class="sm">${S.today=='rest'?'Streak protected. Recover well.':'Session moved forward.'}</div></div>`;
+ return`<div class="badges">${S.solo?'':'<div class="bd">● Alex: In Sync · <span id="b1">120</span> bpm</div>'}<div class="bd">● You: ${S.solo?'Solo':'In Sync'} · <span id="b2">124</span> bpm</div></div>
+<div class="card" style="padding:12px 6px"><div class="dial"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="91" fill="none" stroke="var(--mute)" stroke-width="7" stroke-dasharray="1.4 8.9" opacity=".55" transform="rotate(-90 100 100)"/>${ring(78,pct(),'#7cc4d8')}${ring(64,Math.max(0,pct()-.03),'#7ee8a8')}</svg><div class="mid"><b id="tm">${mmss(S.left)}</b><span>Remaining</span></div></div>
+<div class="sm" style="text-align:center;margin-top:10px">${p.name} · ${p.kept.length} exercises</div></div>
+<div class="pills"><div class="pl">${S.solo?'Your':'Combined'} kcal<b id="kc">${kc()}</b></div><div class="pl">Duo Streak<b>${14+(S.today=='train'&&!S.left?1:0)} Days</b></div><div class="pl">Equipment<b style="font-size:10px">Reformer / KB</b></div></div>
+<div class="card">${p.kept.map(e=>`<div class="ex"><span>${e.n}</span><span>${e.m}m</span></div>`).join('')}</div>
+<button class="btn" id="go" style="margin-top:auto">${S.run?'Pause':S.left?'Start':'Complete ✓'} ${S.solo?'Solo':'Duo'} Set</button><button class="btn g" data-help="1">Pain or feeling unwell? Stop &amp; get help</button>`}
+
+function room(){const d0=S.done?1:0,days=[1,1,0,1,1,0],cnt=days.reduce((a,b)=>a+b,0)+d0,ok=cnt>4,pts=340+d0*10+(ok?50:0),me=S.kcal[0],al=S.kcal[1],lab=['Thu','Fri','Sat','Sun','Mon','Tue','Today'];
+ const R=(r,p,c)=>{const L=2*Math.PI*r;return`<circle cx="50" cy="50" r="${r}" stroke="var(--line)"/><circle cx="50" cy="50" r="${r}" stroke="${c}" stroke-dasharray="${(L*Math.min(1,p)).toFixed(1)} ${L.toFixed(1)}"/>`};
+ return`<div class="t">Room</div>
+<div class="card"><div class="row"><div><div class="sm">Duo Streak</div><div class="t">🔥 ${14+d0} days</div></div><span class="tag">${cnt}/7 active days</span></div>
+<div class="week" style="margin-top:10px">${lab.map((l,i)=>{const on=i<6?days[i]:d0,rest=i==6&&S.today=='rest';return`<div class="d ${rest?'c':on?'s':''} ${i==6?'today':''}">${l}<b>${on?'✓':rest?'☾':'·'}</b></div>`}).join('')}</div>
+<div class="sm" style="margin-top:8px">Logged rest days keep your streak safe.</div></div>
+<div class="card"><div class="sm">Today's Collaborative Goal</div><div class="h" style="margin:2px 0 6px">800 kcal collective output</div><div class="row" style="justify-content:flex-start;gap:14px"><svg viewBox="0 0 100 100" width="86" height="86"><g fill="none" stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)">${R(42,me/400,'#7cc4d8')}${R(28,al/400,'#7ee8a8')}</g></svg><div style="font-size:11px;line-height:1.9">You <b>${Math.round(me)}/400</b><br>Alex <b>${Math.round(al)}/400</b><br><span class="sm">${Math.round(me+al)} of 800 kcal</span></div></div></div>
+<div class="card"><div class="row"><div class="h">🏅 Consistency Rewards</div><span class="tag">${pts} pts</span></div>
+<div class="sm" style="margin:6px 0 8px">${ok?'Unlocked this week: +50 pt bonus for 5+ active days.':`Work out 5+ days a week to unlock +50 pts. You're at ${cnt}/5.`}</div>
+<div style="height:6px;border-radius:9px;background:var(--line);overflow:hidden;margin-bottom:8px"><div style="height:100%;width:${Math.min(100,pts/5)}%;background:var(--mint)"></div></div>
+<div class="ex"><span>${ok?'✅':'🔒'} 5+ active days a week</span><span>+50 pts</span></div>
+<div class="ex"><span>🔒 3 qualifying weeks in a row</span><span>🏅 ${ok?1:0}/3</span></div>
+<div class="ex"><span>${pts>=500?'✅':'🔒'} 500 pts</span><span>Partner reward</span></div>
+<div class="sm" style="margin-top:6px">Demo scheme: points are simulated.</div></div>`}
+
+function render(){const v={sync,coach,session,room}[S.tab]();$('view').className='view'+(S.tab=='coach'?' coach':'');$('view').innerHTML=(S.hold&&S.tab!='coach'?'<div class="card" style="border-color:#f59e0b;padding:10px"><div class="row"><span class="sm">⏸ Training is on hold while a human follows up</span><button class="chip" data-t="coach">Support options</button></div></div>':'')+v;
+ $('nav').innerHTML=[['sync','📅','Sync'],['coach','💬','Coach'],['session','⏱️','Session'],['room','👥','Room']].map(t=>`<button data-t="${t[0]}" class="${S.tab==t[0]?'on':''}"><span>${t[1]}</span>${t[2]}</button>`).join('');
+ const ch=$('view').querySelector('.chat');if(ch)ch.scrollTop=ch.scrollHeight;
+ if((S.voice||S.viaVoice)&&S.msgs.length>S.spoken)speak(S.msgs.slice(S.spoken).filter(m=>m.r=='c'&&!m.pending).map(m=>m.t).join(' '),1);S.spoken=S.msgs.length;S.viaVoice=0;const i=$('in');if(i){i.focus();i.onkeydown=e=>{if(e.key=='Enter'){handle(i.value)}};$('sd').onclick=()=>handle(i.value)}}
+
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.t){S.tab=d.t;render()}else if(d.v!=null){S.act=+d.v;render()}else if(d.c!=null)commit(+d.c);
+ else if(d.ob&&S.onb<2){const o=OB[S.onb].opts.find(x=>x[0]==d.ob);onbAnswer(o[0],o[1],true)}else if(d.slot!=null){S.slot=+d.slot;S.cday=[1,3,5][S.slot];render()}else if(d.day!=null){S.cday=+d.day;render()}
+ else if(b.id=='cr'){commitRoutine()}else if(b.id=='mic'){listen()}else if(b.id=='newtab'){try{window.open(location.href,'_blank')}catch(e){}}else if(d.voice){S.voice^=1;if(S.voice)speak('Voice replies on');render()}else if(d.det){S.planOpen^=1;render()}
+ else if(b.id=='go'&&S.left){if(S.hold)return toast('Paused until a human has followed up');S.run^=1;render()}else if(b.id=='end'){endSolo()}else if(d.solo!=null){commit(+d.solo);startSolo()}else if(d.esc){if(d.esc=='req'){S.esc=2;toast('Request sent');reply("Thanks, I've sent your request. A human will follow up here in the app. I'll keep training paused in the meantime.")}else if(d.esc=='rest'){const v=propose({rest:true});S.vers.push(v);S.act=S.vers.length-1;commit(S.act);reply("Done. Today is logged as a rest day and your full session is on your calendar for tomorrow 7:00 AM. Coaching stays on hold until a human follows up.")}else{S.esc=0;S.hold=0;S.escCat='';reply("Welcome back. Tell me about your day, how long you have and how you feel, and I'll adapt your session.")}render()}else if(d.help){escalate('unwell')}});
+
+setInterval(()=>{if(!S.run||!S.left)return;S.left--;S.kcal[0]+=.09;S.kcal[1]+=.085;
+ if(!S.left){S.run=0;S.done=1;speak('Set complete. Nice work.');toast('Set complete · streak +1');if(S.tab=='session'||S.tab=='sync')render();return}
+ if(S.tab=='sync'){const t2=$('tm2');if(t2){t2.textContent=mmss(S.left);$('pb').style.width=(pct()*100).toFixed(1)+'%';$('kc2').textContent=Math.round(S.kcal[0])}return}
+ if(S.tab!='session')return;const t=$('tm');if(!t)return;t.textContent=mmss(S.left);
+ if($('b1'))$('b1').textContent=118+Math.round(Math.random()*5);$('b2').textContent=122+Math.round(Math.random()*5);$('kc').textContent=kc();
+ [[78,pct()],[64,Math.max(0,pct()-.03)]].forEach(([r,p])=>{const L=2*Math.PI*r;$('rg'+r).setAttribute('stroke-dasharray',(L*p).toFixed(1)+' '+L.toFixed(1))})},1000);
+render();
+</script>
+</body>
+</html>

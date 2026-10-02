@@ -1,0 +1,6 @@
+{
+  "name": "Adaptive Fitness Agent",
+  "description": "An intelligent workout negotiator that continuously adapts training to real-life disruptions, late hours, recovery, and partner schedules while protecting long-term progress.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
